@@ -28,6 +28,24 @@ app.post("/todos", async (req, res) => {
   }
 });
 
+// Update a todo's completion status
+app.put('/todos/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { completed } = req.body;
+
+    const updateTodo = await pool.query(
+      'UPDATE todo SET completed = $1 WHERE todo_id = $2 RETURNING *',
+      [completed, id]
+    );
+
+    res.json(updateTodo.rows[0]);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 //get all todos
 
 app.get("/todos", async (req, res) => {

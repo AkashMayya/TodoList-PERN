@@ -1,0 +1,17 @@
+.completed {
+    text-decoration: line-through;
+  }
+  input[type="checkbox"] {
+    transform: scale(1.5); /* You can adjust the scale factor as needed */
+  }
+  /* Add some custom styling */
+.stylish-button {
+    background-color: #2eacbd; /* Green */
+    color: white;
+    border-radius: 5px;
+    transition: background-color 0.3s ease; /* Smooth transition */
+}
+
+.stylish-button:hover {
+    background-color: #013f63; /* Darker green on hover */
+}
