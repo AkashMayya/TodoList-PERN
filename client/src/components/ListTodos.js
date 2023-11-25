@@ -81,7 +81,6 @@ const ListTodos = () => {
               </td>
               <td>
                 <EditTodo todo={todo} />
-                
               </td>
               <td>
                 <button

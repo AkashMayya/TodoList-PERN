@@ -2,16 +2,17 @@ import React, {Fragment,useState} from "react";
 const EditTodo =({todo}) =>{
   const[description,setDescription] =useState(todo.description);
   //edit description function
-  const updateDescription=async e =>{
+  const updateDescription=async (e) =>{
     e.preventDefault();
     try{
+      console.log("Updated Description:",description);
       const body={description};
-      const response = await fetch(`http://localhost:3500/todos/${todo.todo_id}`,{
+      const response = await fetch(`http://localhost:3500/todos/${todo.todo_id}`,
+      {
         method:"PUT",
         headers:{"Content-Type":"application/json"},
         body:JSON.stringify(body)
     });
-    console.log(response);
     window.location="/";
   }catch(err){
     console.error(err.message);
