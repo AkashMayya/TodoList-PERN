@@ -13,13 +13,12 @@ const port = process.env.PORT || 3500;
 //ROUTES//
 
 //create a todo
-
 app.post("/todos", async (req, res) => {
   try {
-    const { description } = req.body;
+    const { user_name, description } = req.body;
     const newTodo = await pool.query(
-      "INSERT INTO todo (description) VALUES($1) RETURNING *",
-      [description]
+      "INSERT INTO todo (user_name, description) VALUES($1, $2) RETURNING *",
+      [user_name, description]
     );
 
     res.json(newTodo.rows[0]);
@@ -28,6 +27,7 @@ app.post("/todos", async (req, res) => {
   }
 });
 
+// Update a todo's completion status
 // Update a todo's completion status
 app.put('/todos/:id', async (req, res) => {
   try {
@@ -39,28 +39,36 @@ app.put('/todos/:id', async (req, res) => {
       [completed, id]
     );
 
-    res.json(updateTodo.rows[0]);
+    const updatedTodo = updateTodo.rows[0];
+
+    // Check if a week has passed since the todo was created
+    //const oneWeekAgo = new Date();
+    //oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+    const fiveMinutesAgo = new Date();
+    fiveMinutesAgo.setMinutes(fiveMinutesAgo.getMinutes() - 5);
+
+    //if (new Date(updatedTodo.created_at) < oneWeekAgo) 
+    if (new Date(updatedTodo.created_at) < fiveMinutesAgo)
+    {
+      // Reset completed to false and update created_at to the current timestamp
+      const resetTodo = await pool.query(
+        'UPDATE todo SET completed = $1, created_at = CURRENT_TIMESTAMP WHERE todo_id = $2 RETURNING *',
+        [false, id]
+      );
+
+      res.json(resetTodo.rows[0]);
+    } else {
+      res.json(updatedTodo);
+    }
   } catch (err) {
     console.error(err.message);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-//update a todo
 
-app.put("/todos/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { description } = req.body;
-    const updateTodo = await pool.query(
-      "UPDATE todo SET description = $1 WHERE todo_id = $2",
-      [description, id]
-    );
 
-    res.json("Todo was updated!");
-  } catch (err) {
-    console.error(err.message);
-  }
-});
+
 //get all todos
 
 app.get("/todos", async (req, res) => {

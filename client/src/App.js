@@ -1,15 +1,9 @@
 import React,{Fragment} from "react";
-//components
-import InputTodo from "./components/InputTodo";
-import ListTodos from "./components/ListTodos";
+import Finallist from "./Finallist";
 function App() {
   return (
-    <Fragment>
-      <div className="container">
-      <InputTodo />
-      <ListTodos />
-      </div>
-      </Fragment>
+
+      <Finallist />
   );
 }
 
